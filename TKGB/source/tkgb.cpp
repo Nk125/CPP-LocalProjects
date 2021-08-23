@@ -111,7 +111,7 @@ int main() {
                 outfile.close();
             }
         } catch (...) {
-            cerr << "";
+            cerr << ""; // Really it's supposed to don't do anything here
         }
     }
     return 0;
