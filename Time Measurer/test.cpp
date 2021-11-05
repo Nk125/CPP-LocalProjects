@@ -10,7 +10,7 @@ void await() {
 }
 
 int main() {
-  // This need to be too verbose, sorry if there's too much cout's
+  // This need to be too verbose, sorry if there are too much cout's
   nk125::measurer ms;
   cout << "Test 1 (get_ms_taken, no initialization before): " << ms.get_ms_taken() << endl;
   cout << "Test 2 (end_timestamp, no initialization before)\n";
