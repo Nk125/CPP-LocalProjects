@@ -12,6 +12,9 @@ namespace nk125 {
 
       // Calculates the average of time taken for each execution
       long long m_calc_micro_avrg() {
+        if (m_timestamps.size() == 0) {
+          return 0;
+        }
         m_mtx_handler.lock();
         m_tm_total = 0;
         if (vsize_limit < m_timestamps.size()) {
