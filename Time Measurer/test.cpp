@@ -30,7 +30,7 @@ int main() {
     ms.end_timestamp();
     cout << "Test 5 Finished\n";
     cout << "Awaited " << ms.get_ms_taken() << " milliseconds\n";
-    cout << "Awaited " << ms.get_sec_taken() << " milliseconds\n";
+    cout << "Awaited " << ms.get_sec_taken() << " seconds\n";
     cout << "Operations per microsecond: " << ms.op_per_micro() << endl;
     cout << "Operations per millisecond: " << ms.op_per_ms() << endl;
     cout << "Operations per second: " << ms.op_per_sec() << "\n\n";
