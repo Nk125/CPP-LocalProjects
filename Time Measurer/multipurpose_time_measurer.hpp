@@ -17,7 +17,8 @@ namespace nk125 {
         }
         m_mtx_handler.lock();
         m_tm_total = 0;
-        if (vsize_limit < m_timestamps.size()) {
+        if (vsize_limit == m_timestamps.size()) {
+          // It now check if the vector is EXACTLY as limit defined, to avoid memory overflow on low spec devices
           m_timestamps.erase(m_timestamps.begin());
         }
         m_mtx_handler.unlock();
