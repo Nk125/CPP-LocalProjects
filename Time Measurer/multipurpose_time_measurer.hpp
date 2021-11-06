@@ -1,6 +1,7 @@
 #include <chrono>
 #include <cmath>
 #include <mutex>
+#include <stdexcept>
 #include <thread>
 #include <vector>
 
@@ -50,6 +51,9 @@ namespace nk125 {
 
     public:
       measurer(int vector_limit = 50) {
+        if (vector_limit < 0) {
+          vector_limit = 0;
+        }
         vsize_limit = vector_limit;
       }
 
