@@ -12,13 +12,12 @@ namespace nk125 {
 
       // Calculates the average of time taken for each execution
       long long m_calc_micro_avrg() {
-        if (m_timestamps.size() == 0) {
+        if (m_timestamps.size() <= 0) {
           return 0;
         }
         m_mtx_handler.lock();
         m_tm_total = 0;
-        if (vsize_limit == m_timestamps.size()) {
-          // It now check if the vector is EXACTLY as limit defined, to avoid memory overflow on low spec devices that need to reduce the memory consumed
+        if (vsize_limit <= m_timestamps.size()) {
           m_timestamps.erase(m_timestamps.begin());
         }
         m_mtx_handler.unlock();
@@ -31,6 +30,17 @@ namespace nk125 {
         long long average = m_tm_total / m_timestamps.size();
         m_mtx_handler.unlock();
         return average;
+      }
+
+      float m_wrap_opt(int div = 0) {
+        long long mcma = m_calc_micro_avrg();
+        if (mcma == 0) {return 0;}
+        else if (div == 0) {
+          return float(1 / float(mcma));
+        }
+        else {
+          return float(1 / float(mcma / float(div)));
+        }
       }
 
       std::vector<long long> m_timestamps;
@@ -58,15 +68,15 @@ namespace nk125 {
       }
 
       float op_per_micro() {
-        return float(1 / float(m_calc_micro_avrg()));
+        return m_wrap_opt();
       }
 
       float op_per_ms() {
-        return float(1 / float(m_calc_micro_avrg() / float(1000)));
+        return m_wrap_opt(1000);
       }
 
       float op_per_sec() {
-        return float(1 / float(m_calc_micro_avrg() / float(1000 * 1000)));
+        return m_wrap_opt(1000 * 1000);
       }
 
       void start_timestamp() {
@@ -84,7 +94,9 @@ namespace nk125 {
         std::chrono::microseconds micro = std::chrono::duration_cast<std::chrono::microseconds>(m_e_timestamp - m_s_timestamp);
         m_micro_taken = micro.count();
         m_mtx_handler.lock();
-        m_timestamps.push_back(m_micro_taken);
+        if (vsize_limit != 0) { 
+          m_timestamps.push_back(m_micro_taken);
+        }
         lock = true;
         m_mtx_handler.unlock();
       }
