@@ -1,11 +1,10 @@
 #include <chrono>
 #include <cmath>
 #include <mutex>
-#include <thread>
 #include <vector>
 
 namespace nk125 {
-  class measurer {
+  class time_measurer {
     private:
       int vsize_limit;
       std::mutex m_mtx_handler;
@@ -49,7 +48,7 @@ namespace nk125 {
       bool lock, st_bef = false;
 
     public:
-      measurer(int vector_limit = 50) {
+      time_measurer(int vector_limit = 50) {
         if (vector_limit < 0) {
           vector_limit = 0;
         }
@@ -97,7 +96,7 @@ namespace nk125 {
         std::chrono::microseconds micro = std::chrono::duration_cast<std::chrono::microseconds>(m_e_timestamp - m_s_timestamp);
         m_micro_taken = micro.count();
         m_mtx_handler.lock();
-        if (vsize_limit != 0) { 
+        if (vsize_limit != 0) {
           m_timestamps.push_back(m_micro_taken);
         }
         lock = true;
