@@ -4,6 +4,12 @@
 
 namespace nk125 {
   class binary_file_handler {
+    private:
+      std::string read_error = "The file specified cannot be opened.";
+      std::string write_error = read_error;
+      long long m_size;
+    // End Od Private
+    
     public:
       std::string read_file(std::string file_path) {
         std::ifstream in_file(file_path, std::ios::binary);
@@ -18,7 +24,24 @@ namespace nk125 {
           return m_str_buff;
         }
         else {
-          throw std::runtime_error("The file specified cannot be opened.");
+          throw std::runtime_error(read_error);
+        }
+      }
+      
+      long long size_file(std::string file_path) {
+        m_size = 0;
+        std::ifstream in_file(file_path, std::ios::binary);
+        char m_ch_buff;
+        if (in_file.is_open()) {
+          while (in_file >> std::noskipws >> m_ch_buff) {
+            ++m_size;
+          }
+          m_ch_buff = '\0';
+          in_file.close();
+          return m_size;
+        }
+        else {
+          throw std::runtime_error(read_error);
         }
       }
 
@@ -30,7 +53,20 @@ namespace nk125 {
           return;
         }
         else {
-          throw std::runtime_error("The file specified maybe have permission problems or it's already being used.");
+          throw std::runtime_error(write_error);
+        }
+        return;
+      }
+      
+      void append_file(std::string file_path, std::string content) {
+        std::ofstream out_file(file_path, std::ios::binary | std::ios::app);
+        if (out_file.is_open()) {
+          out_file.write(content.c_str(), content.size());
+          out_file.close();
+          return;
+        }
+        else {
+          throw std::runtime_error(write_error);
         }
         return;
       }
