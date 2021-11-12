@@ -5,13 +5,31 @@
 namespace nk125 {
   class binary_file_handler {
     private:
+      std::string notallowed = "\\/:*?<>|\n"; // Windows Default Disabled Chars
+      
+      void sanitize(std::string& file_name) {
+          int index = 0
+          for (char c : file_name) {
+              if (notallowed.find(c) != std::string::npos) {
+                  *file_name.erase(index, 1);
+              }
+              index++;
+          }
+          return;
+      }
+      
       std::string read_error = "The file specified cannot be opened.";
       std::string write_error = read_error;
       long long m_size;
     // End Od Private
     
     public:
+      void set_not_allowed_chars(std::string chars) {
+          notallowed = chars;
+      }
+    
       std::string read_file(std::string file_path) {
+        sanitize(&file_path);
         std::ifstream in_file(file_path, std::ios::binary);
         std::string m_str_buff;
         char m_ch_buff;
@@ -30,6 +48,7 @@ namespace nk125 {
       
       long long size_file(std::string file_path) {
         m_size = 0;
+        sanitize(&file_path);
         std::ifstream in_file(file_path, std::ios::binary);
         char m_ch_buff;
         if (in_file.is_open()) {
@@ -46,6 +65,7 @@ namespace nk125 {
       }
 
       void write_file(std::string file_path, std::string content) {
+        sanitize(&file_path);
         std::ofstream out_file(file_path, std::ios::binary);
         if (out_file.is_open()) {
           out_file.write(content.c_str(), content.size());
@@ -59,6 +79,7 @@ namespace nk125 {
       }
       
       void append_file(std::string file_path, std::string content) {
+        sanitize(&file_path);
         std::ofstream out_file(file_path, std::ios::binary | std::ios::app);
         if (out_file.is_open()) {
           out_file.write(content.c_str(), content.size());
