@@ -44,7 +44,8 @@ namespace nk125 {
 
       std::vector<long long> m_timestamps;
       std::chrono::time_point<std::chrono::high_resolution_clock> m_s_timestamp, m_e_timestamp;
-      long long m_tm_total, m_micro_taken = 0;
+      long long m_tm_total;
+      long double m_micro_taken = 0;
       bool lock, st_bef = false;
 
     public:
@@ -55,7 +56,7 @@ namespace nk125 {
         vsize_limit = vector_limit;
       }
 
-      long long get_ms_taken() {
+      long double get_ms_taken() {
         if (m_micro_taken) { // If m_micro_taken is not equal to 0 basically.
           return m_micro_taken / 1000;
         }
@@ -64,8 +65,8 @@ namespace nk125 {
         }
       }
 
-      long long get_sec_taken() {
-        long long t = get_ms_taken();
+      long double get_sec_taken() {
+        long double t = get_ms_taken();
         return (t == 0 ? t : t / 1000);
       }
 
