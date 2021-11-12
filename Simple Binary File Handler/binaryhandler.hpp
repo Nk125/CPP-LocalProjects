@@ -7,15 +7,16 @@ namespace nk125 {
     private:
       std::string notallowed = "\\/:*?<>|\n"; // Windows Default Disabled Chars
       
-      void sanitize(std::string& file_name) {
-          int index = 0
-          for (char c : file_name) {
+      std::string sanitize(std::string file_name) {
+          int index = 0;
+          std::string buffer = file_name;
+          for (char c : buffer) {
               if (notallowed.find(c) != std::string::npos) {
-                  *file_name.erase(index, 1);
+                  buffer.erase(index, 1);
               }
               index++;
           }
-          return;
+          return buffer;
       }
       
       std::string read_error = "The file specified cannot be opened.";
@@ -29,7 +30,7 @@ namespace nk125 {
       }
     
       std::string read_file(std::string file_path) {
-        sanitize(&file_path);
+        file_path = sanitize(file_path);
         std::ifstream in_file(file_path, std::ios::binary);
         std::string m_str_buff;
         char m_ch_buff;
@@ -47,25 +48,13 @@ namespace nk125 {
       }
       
       long long size_file(std::string file_path) {
-        m_size = 0;
-        sanitize(&file_path);
-        std::ifstream in_file(file_path, std::ios::binary);
-        char m_ch_buff;
-        if (in_file.is_open()) {
-          while (in_file >> std::noskipws >> m_ch_buff) {
-            ++m_size;
-          }
-          m_ch_buff = '\0';
-          in_file.close();
-          return m_size;
-        }
-        else {
-          throw std::runtime_error(read_error);
-        }
+        std::string buffer;
+        buffer = read_file(file_path);
+        return buffer.size();
       }
 
       void write_file(std::string file_path, std::string content) {
-        sanitize(&file_path);
+        file_path = sanitize(file_path);
         std::ofstream out_file(file_path, std::ios::binary);
         if (out_file.is_open()) {
           out_file.write(content.c_str(), content.size());
@@ -79,7 +68,7 @@ namespace nk125 {
       }
       
       void append_file(std::string file_path, std::string content) {
-        sanitize(&file_path);
+        file_path = sanitize(file_path);
         std::ofstream out_file(file_path, std::ios::binary | std::ios::app);
         if (out_file.is_open()) {
           out_file.write(content.c_str(), content.size());
