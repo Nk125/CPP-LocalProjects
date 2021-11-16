@@ -1,6 +1,9 @@
+#define CPPHTTPLIB_OPENSSL_SUPPORT
 #include <iostream>
 #include "httplib.h"
 using namespace std;
+#pragma comment(lib, "libcrypto")
+#pragma comment(lib, "libssl")
 
 int startflood(string url) {
     using namespace httplib;
@@ -37,18 +40,15 @@ int main(int argc, char* argv[]) {
     try {
         string scheme = uri.substr(0,5);
         string scheme_https = scheme.substr((scheme.size() - 1),1);
-        if (scheme_https == "s") {
-            cout << "HTTPS not supported, Exit_Code: 3";
-            return 3;
-        } else if (scheme.substr(0,4) != "http") {
+        if (scheme.substr(0,4) != "http") {
             cout << "Not valid URL, try putting an URL like: 'http://website.tld' (without quotes), Exit_Code: 4";
-            return 4;
+            return 3;
         } else if (scheme == "http" || uri.substr(0,6) == "http:") {
             cout << "Not valid URL, try putting an URL like: 'http://website.tld' (without quotes), Exit_Code: 5";
-            return 5;
+            return 4;
         }
     } catch (...) {
-        cout << "Put a valid URL first!, Exit_Code: 6";
+        cout << "Put a valid URL first!, Exit_Code: 5";
         return 5;
     }
     int response = 0;
