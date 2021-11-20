@@ -5,7 +5,7 @@
 namespace nk125 {
   class binary_file_handler {
     private:
-      std::string notallowed = "\\/:*?<>|\n"; // Windows Default Disabled Chars
+      std::string notallowed = "*?<>|\n"; // Windows Default Disabled Chars
       
       std::string sanitize(std::string file_name) {
           int index = 0;
@@ -22,7 +22,7 @@ namespace nk125 {
       std::string read_error = "The file specified cannot be opened.";
       std::string write_error = read_error;
       long long m_size;
-    // End Od Private
+    // End Of Private
     
     public:
       void set_not_allowed_chars(std::string chars) {
