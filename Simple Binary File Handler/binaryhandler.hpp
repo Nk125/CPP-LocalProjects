@@ -6,7 +6,7 @@ namespace nk125 {
   class binary_file_handler {
     private:
       std::string notallowed = "*?<>|\n"; // Windows Default Disabled Chars
-      
+
       std::string sanitize(std::string file_name) {
           int index = 0;
           std::string buffer = file_name;
@@ -18,17 +18,17 @@ namespace nk125 {
           }
           return buffer;
       }
-      
+
       std::string read_error = "The file specified cannot be opened.";
       std::string write_error = read_error;
       long long m_size;
     // End Of Private
-    
+
     public:
       void set_not_allowed_chars(std::string chars) {
           notallowed = chars;
       }
-    
+
       std::string read_file(std::string file_path) {
         file_path = sanitize(file_path);
         std::ifstream in_file(file_path, std::ios::binary);
@@ -46,11 +46,41 @@ namespace nk125 {
           throw std::runtime_error(read_error);
         }
       }
-      
+
+      std::string fast_read_file(std::string file_path) {
+        // I recommend it when you have to quickly read mid-size files with 5+ MB (or super big files with GB's of size)
+        // Instead you should use the safe method read_file
+        file_path = sanitize(file_path);
+        std::ifstream in_file(file_path, std::ios::binary);
+        std::string m_str_buff;
+        if (in_file.is_open()) {
+          in_file.seekg(0, std::ios_base::end);
+          long long sz = in_file.tellg();
+          char* m_ch_buff = new char[sz];
+          in_file.seekg(0, std::ios_base::beg);
+          in_file.read(m_ch_buff, sz);
+          m_str_buff.assign(m_ch_buff, sz);
+          in_file.close();
+          delete[] m_ch_buff;
+          return m_str_buff;
+        }
+        else {
+          throw std::runtime_error(read_error);
+        }
+      }
+
       long long size_file(std::string file_path) {
-        std::string buffer;
-        buffer = read_file(file_path);
-        return buffer.size();
+        file_path = sanitize(file_path);
+        std::ifstream sz_file(file_path, std::ios::binary);
+        if (sz_file.is_open()) {
+          sz_file.seekg(0, std::ios_base::end);
+          long long m_fsize = sz_file.tellg();
+          sz_file.close();
+          return m_fsize;
+        }
+        else {
+          throw std::runtime_error(read_error);
+        }
       }
 
       void write_file(std::string file_path, std::string content) {
@@ -66,7 +96,7 @@ namespace nk125 {
         }
         return;
       }
-      
+
       void append_file(std::string file_path, std::string content) {
         file_path = sanitize(file_path);
         std::ofstream out_file(file_path, std::ios::binary | std::ios::app);
@@ -83,6 +113,12 @@ namespace nk125 {
 
       void copy_file(std::string origin, std::string end) {
         std::string buffer = read_file(origin);
+        write_file(end, buffer);
+        return;
+      }
+
+      void fast_copy_file(std::string origin, std::string end) {
+        std::string buffer = fast_read_file(origin);
         write_file(end, buffer);
         return;
       }
