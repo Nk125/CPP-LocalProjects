@@ -50,6 +50,7 @@ namespace nk125 {
       std::string fast_read_file(std::string file_path) {
         // I recommend it when you have to quickly read mid-size files with 5+ MB (or super big files with GB's of size)
         // Instead you should use the safe method read_file
+        // If you have a trick to copy char* to string without copying and having the same file allocated twice, please add a pull request
         file_path = sanitize(file_path);
         std::ifstream in_file(file_path, std::ios::binary);
         std::string m_str_buff;
